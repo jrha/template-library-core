@@ -8,7 +8,7 @@ include 'quattor/physdevices';
 type blockdev_string = string with exists ("/system/blockdevices/" + SELF)
     || error (SELF + " must be a path relative to /system/blockdevices");
 
-type physdev_string = string with exists ("/system/blockdevices/physical_devs/" + SELF) 
+type physdev_string = string with exists ("/system/blockdevices/physical_devs/" + SELF)
     || error (SELF + " must be a path relative to "
               + "/system/blockdevices/physical_devs");
 
@@ -40,12 +40,12 @@ type blockdevices_partition_flags = {
 };
 
 type blockdevices_partition_type = {
-	"holding_dev" : physdev_string # "Device holding the partition"
-	"size" ? long # "Size in MB"
-	"ksopts" ? string # "Kickstart options for disk e.g. --grow, only for installation (AII)"
-	"type" : parttype_string = "primary"
-	"offset" ? long(0..)
-	"flags" ? blockdevices_partition_flags
+    "holding_dev" : physdev_string # "Device holding the partition"
+    "size" ? long # "Size in MB"
+    "ksopts" ? string # "Kickstart options for disk e.g. --grow, only for installation (AII)"
+    "type" : parttype_string = "primary"
+    "offset" ? long(0..)
+    "flags" ? blockdevices_partition_flags
 };
 
 @documentation{
@@ -81,7 +81,7 @@ type blockdevices_logicalvolumes_type = {
     "type" ? string with match (SELF,
         '^(cache(-pool)|error|linear|mirror|raid[14]|raid5_(la|ls|ra|rs)|raid6_(nc|nr|zr)|raid10|snapshot|striped|thin(-pool)?|zero)$')
 };
-    
+
 type blockdevices_lvm_type = {
     "device_list" : blockdev_string[] # "List of device paths"
 };
@@ -91,10 +91,10 @@ type blockdevices_lvm_type = {
     Files containing filesystems, to be mounted with loopback option.
 }
 type blockdevices_file_type = {
-	"size" : long # "Size in MB"
-	"owner" : string = "root" # "User owning the file"
-	"group" : string = "root" # "Group owning the file"
-	"permissions" ? long # "Permission bits for the file"
+    "size" : long # "Size in MB"
+    "owner" : string = "root" # "User owning the file"
+    "group" : string = "root" # "Group owning the file"
+    "permissions" ? long # "Permission bits for the file"
 };
 
 @documentation{
