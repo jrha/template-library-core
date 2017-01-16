@@ -38,9 +38,12 @@ type blockdevices_partition_flags = {
 };
 
 type blockdevices_partition_type = {
-    "holding_dev" : physdev_string # "Device holding the partition"
-    "size" ? long # "Size in MB"
-    "ksopts" ? string # "Kickstart options for disk e.g. --grow, only for installation (AII)"
+    @{ Device holding the partition }
+    "holding_dev" : physdev_string
+    @{ Size in MB }
+    "size" ? long
+    @{ Kickstart options for disk e.g. --grow, only for installation (AII) }
+    "ksopts" ? string
     "type" : parttype_string = "primary"
     "offset" ? long(0..)
     "flags" ? blockdevices_partition_flags
@@ -50,11 +53,13 @@ type blockdevices_partition_type = {
     Software RAID using the MD device
 }
 type blockdevices_md_type = {
-    "device_list" : blockdev_string[] # "List of device paths"
+    @{ List of device paths }
+    "device_list" : blockdev_string[]
     "raid_level" : string with match (SELF, '^RAID[0156]$')
-    "stripe_size" : long = 64 # "Stripe size in KB"
+    @{ Stripe size in KB }
+    "stripe_size" : long = 64
+    @{ Declare the style of RAID metadata (superblock) to be used. This is --metadata in `man mdadm` }
     "num_spares" ? long # "Number of spare devices"
-    # Declare the style of RAID metadata (superblock) to be used. This is --metadata in `man mdadm`
     "metadata" ? string = '0.90' with index(SELF, list('0', '0.90', '1.0', '1.1', '1.2', 'ddf', 'imsm', 'default')) > 0
 };
 
@@ -70,17 +75,21 @@ type blockdevices_logicalvolumes_cache_type = {
     LVM
 }
 type blockdevices_logicalvolumes_type = {
-    "size" ? long # "Size in MB"
+    @{ Size in MB }
+    "size" ? long
     "volume_group" : vg_string
-    "stripe_size" ? long # Size of the stripe. If not used, no striping
-    "chunksize" ? long = 64 # "chunk size in KB"
+    @{ Size of the stripe. If not used, no striping }
+    "stripe_size" ? long
+    @{ chunk size in KB }
+    "chunksize" ? long = 64
     "devices" ? blockdev_string[]
     "cache" ? blockdevices_logicalvolumes_cache_type
     "type" ? string with match (SELF, '^(cache(-pool)|error|linear|mirror|raid[14]|raid5_(la|ls|ra|rs)|raid6_(nc|nr|zr)|raid10|snapshot|striped|thin(-pool)?|zero)$')
 };
 
 type blockdevices_lvm_type = {
-    "device_list" : blockdev_string[] # "List of device paths"
+    @{ List of device paths }
+    "device_list" : blockdev_string[]
 };
 
 
@@ -88,10 +97,14 @@ type blockdevices_lvm_type = {
     Files containing filesystems, to be mounted with loopback option.
 }
 type blockdevices_file_type = {
-    "size" : long # "Size in MB"
-    "owner" : string = "root" # "User owning the file"
-    "group" : string = "root" # "Group owning the file"
-    "permissions" ? long # "Permission bits for the file"
+    @{ Size in MB }
+    "size" : long
+    @{ User owning the file }
+    "owner" : string = "root"
+    @{ Group owning the file }
+    "group" : string = "root"
+    @{ Permission bits for the file }
+    "permissions" ? long
 };
 
 @documentation{
@@ -103,7 +116,8 @@ type raid_device_path = string with exists ("/system/blockdevices/hwraid/"
 type blockdevices_disk_type = {
     "device_path" ? raid_device_path
     "label" : string with match (SELF, ("^(none|msdos|gpt|aix|bsd)$"))
-    "readahead" ? long # Blocks for readahead
+    @{ Blocks for readahead }
+    "readahead" ? long
 };
 
 type card_port_string = string with is_card_port (SELF);
@@ -114,8 +128,10 @@ type card_port_string = string with is_card_port (SELF);
 type blockdevices_hwraid_type = {
     "device_list" : card_port_string[]
     "raid_level" ? string with match (SELF, '^(RAID1|RAID5|RAID6|JBOD)$')
-    "num_spares" ? long # "Number of spares required"
-    "stripe_size" ? long # "Stripe size in KB"
+    @{ Number of spares required }
+    "num_spares" ? long
+    @{ Stripe size in KB }
+    "stripe_size" ? long
 };
 
 @documentation{
