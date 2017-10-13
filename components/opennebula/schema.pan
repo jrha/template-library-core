@@ -16,7 +16,6 @@ declaration template components/opennebula/schema;
 
 include 'quattor/schema';
 include 'pan/types';
-include 'quattor/aii/opennebula/schema';
 
 type directory = string with match(SELF, '[^/]+/?$');
 
