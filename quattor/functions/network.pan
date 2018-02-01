@@ -162,6 +162,20 @@ function ip_in_network = {
 
 
 @documentation{
+    descr = Returns true if provided IPv4 address is a valid multicast address
+    args = IPv4 address to test
+}
+function ipv4_is_multicast = {
+    if ( ARGC != 1 ) {
+        error("ipv4_is_multicast requires a single argument");
+    };
+    ipaddr = ARGV[0];
+    # Check that IP is in the top-level multicast block (224.0.0.0/4)
+    ip_in_network(ipaddr, '224.0.0.0', '255.0.0.0');
+};
+
+
+@documentation{
     descr = Checks which subnet ipaddr is a member of and returns the corresponding subnet\
  parameters for netmask, gateway...
     arg = subnet list, a list of dict where the keys are all the properties supported\
