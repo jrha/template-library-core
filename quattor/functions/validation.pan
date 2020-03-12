@@ -14,16 +14,20 @@ include 'pan/functions';
 }
 function is_component_list = {
     # Check the argument.
-    if (ARGC != 1) error("is_component_list requires one argument");
-    if (!is_list(ARGV[0])) error("is_component_list requires list argument");
+    if (ARGC != 1) {
+        error("is_component_list requires one argument");
+    };
+    if (!is_list(ARGV[0])) {
+        error("is_component_list requires list argument");
+    };
 
     # Location of the components.
     base = "/software/components/";
 
     components = ARGV[0];
 
-    foreach(k; v; components){
-        if (!exists(base + v)){
+    foreach(k; v; components) {
+        if (!exists(base + v)) {
             error("is_component_list: component " + v + " does not exist");
         };
     };
@@ -63,8 +67,12 @@ function check_mount = {
 }
 function is_profile_list = {
     # Check the argument.
-    if(ARGC != 1) error("is_profile_list: requires exactly one argument");
-    if(!is_list(ARGV[0])) error("is_profile_list: argument must be a list");
+    if (ARGC != 1) {
+        error("is_profile_list: requires exactly one argument");
+    };
+    if (!is_list(ARGV[0])) {
+        error("is_profile_list: argument must be a list");
+    };
 
     # Location of the profiles.
     base = "//";
@@ -73,10 +81,10 @@ function is_profile_list = {
     profiles = ARGV[0];
 
     foreach(k; v; profiles){
-        if(match(v, format('^%s\w+$', prfx)))
+        if (match(v, format('^%s\w+$', prfx)))
             error(format("Name not allowed: %s", v));
 
-        if(!(exists(format("%s%s/", base, v)) || exists(format("%s%s%s/", base, prfx, v))))
+        if (!(exists(format("%s%s/", base, v)) || exists(format("%s%s%s/", base, prfx, v))))
             error(format("Non existing profile: %s", v));
     };
     true;
@@ -91,7 +99,7 @@ function is_a_fcahwaddr = {
         error("usage: is_fcahwaddr(string)");
     };
     if (match(ARGV[0], 'unknown')) {
-        return (true);
+        return(true);
     };
     match(ARGV[0], '^[\dA-Fa-f]{2}([:-])[\dA-Fa-f]{2}(\1[\dA-Fa-f]{2}){6}$');
 };
@@ -102,8 +110,8 @@ function is_a_fcahwaddr = {
 }
 function is_card_port = {
     path = ARGV[0];
-    if (exists ("/hardware/cards/" + path) && match (path, 'ports/_\d+')) {
-        return (true);
+    if (exists("/hardware/cards/" + path) && match(path, 'ports/_\d+')) {
+        return(true);
     };
     error ("Ports on disk controllers must be indexed with a number");
 };
@@ -113,15 +121,15 @@ function is_card_port = {
     desc = returns true if all the controller and port indexes are numeric (but have a leading _ to make them work as nlists).
 }
 function is_valid_card_ports = {
-    l = list ("raid", "ide", "sata", "scsi", "sas");
+    l = list("raid", "ide", "sata", "scsi", "sas");
 
     cardlist = ARGV[0];
 
     foreach (i; card; l) {
-        if (exists (cardlist[card])) {
+        if (exists(cardlist[card])) {
             foreach (controller; data; cardlist[card]) {
-                if (!match (controller, '^_\d+$')) {
-                    error (format("Card %s index %s is not valid", card, controller));
+                if (!match(controller, '^_\d+$')) {
+                    error(format("Card %s index %s is not valid", card, controller));
                 };
             };
         };
