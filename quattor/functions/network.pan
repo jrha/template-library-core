@@ -9,14 +9,18 @@ include 'pan/types';
 }
 function set_interface_defaults = {
     # general checking
-    if( ARGC != 1 ) error("precisely one argument expected: the dict with defaults");
+    if( ARGC != 1 ) {
+        error("precisely one argument expected: the dict with defaults");
+    };
     defaults = ARGV[0];
 
-    if( !is_dict(defaults) ) error("expecting dict with defaults as argument");
-    if( !exists(defaults["netmask"]) || !is_ip(defaults["netmask"]) ) {
+    if (!is_dict(defaults)) {
+        error("expecting dict with defaults as argument");
+    };
+    if (!exists(defaults["netmask"]) || !is_ip(defaults["netmask"])) {
         error("default settings for netmask expected");
     };
-    if( !exists(defaults["gateway"]) || !is_ip(defaults["gateway"]) ) {
+    if (!exists(defaults["gateway"]) || !is_ip(defaults["gateway"])) {
         error("default settings for gateway expected");
     };
 
@@ -24,7 +28,7 @@ function set_interface_defaults = {
     interfaces = value("/system/network/interfaces");
     foreach (ifname; ifsets; interfaces) {
         foreach (idx; key; list('netmask', 'broadcast', 'gateway')) {
-            if( (!exists(ifsets[key]) || !is_defined(ifsets[key])) &&
+            if ((!exists(ifsets[key]) || !is_defined(ifsets[key])) &&
                 exists(defaults[key]) ) {
                 ifsets[key]  = defaults[key];
             };
@@ -40,7 +44,7 @@ function set_interface_defaults = {
 }
 function boot_nic = {
     foreach (ifname; data; value("/hardware/cards/nic")) {
-        if(exists(data['boot']) && data['boot']) {
+        if (exists(data['boot']) && data['boot']) {
             return(ifname);
         };
     };
@@ -93,26 +97,26 @@ function copy_network_params = {
         # In the case of the boot interface, doesn't allow an explicit declaration of
         # the MTU value both for the boot interface name and for the BOOT entry. If
         # one of them is undefined, take the explicit one.
-        if ( exists(MTU["BOOT"]) && (name == boot) ) {
-            if ( is_defined(MTU["BOOT"]) ) {
-                if ( is_defined(MTU[name]) ) {
+        if (exists(MTU["BOOT"]) && (name == boot)) {
+            if (is_defined(MTU["BOOT"])) {
+                if (is_defined(MTU[name])) {
                     error(format("MTU size defined for '%s' (%d): MTU['BOOT'] entry (%d) not allowed",
                                     name, MTU[name], MTU["BOOT"]));
                 } else {
                     mtu_size = MTU["BOOT"];
                 };
-            } else if ( is_defined(MTU[name]) ) {
+            } else if (is_defined(MTU[name]) ) {
                 mtu_size = MTU[name];
             };
-        } else if ( exists(MTU[name])) {
+        } else if (exists(MTU[name])) {
             mtu_size = MTU[name];
-        } else if ( exists(MTU[nic_type])) {
+        } else if (exists(MTU[nic_type])) {
             mtu_size = MTU[nic_type];
-        } else if ( exists(MTU["DEFAULT"])) {
+        } else if (exists(MTU["DEFAULT"])) {
             mtu_size = MTU["DEFAULT"];
         };
 
-        if ( is_defined(mtu_size) ) {
+        if (is_defined(mtu_size)) {
             net_params["mtu"] = mtu_size;
         };
 
@@ -170,34 +174,36 @@ function ip_in_network = {
     arg = ip address to test
 }
 function get_subnet_params = {
-    if ( ARGC != 2 ) {
+    if (ARGC != 2) {
         error("get_subnet_params requires 2 arguments");
     };
 
     subnet_list = ARGV[0];
     ipaddr = ARGV[1];
 
-    if ( !is_list(subnet_list) ) {
+    if (!is_list(subnet_list)) {
         error("get_subnet_params first argument must be a list");
     };
 
     foreach (i; params; subnet_list) {
-        if ( !is_dict(params) ) {
+        if (!is_dict(params)) {
             error("Subnet description must be a dict");
         };
         # 'subnet' used to be a regexp: replace '.*' at the end of the
         # regexp by '.0' to help with the backward compatibility
         # Also replace every occurence of '\.' by `.` if between
         # address tokens.
-        if ( is_defined(params['subnet']) ) {
+        if (is_defined(params['subnet'])) {
             subnet_saved = params['subnet'];
             params['subnet'] = replace('\\?\.\*', '.0', params['subnet']);
             params['subnet'] = replace('(?<=\d)\\\.(?=\d)', '.', params['subnet']);
             if ( params['subnet'] != subnet_saved ) {
-                deprecated(0, format("%s - specifying subnet as a regexp (%s) is deprecated: converted to %s",
-                                    OBJECT,
-                                    subnet_saved,
-                                    params['subnet']));
+                deprecated(0, format(
+                    "%s - specifying subnet as a regexp (%s) is deprecated: converted to %s",
+                    OBJECT,
+                    subnet_saved,
+                    params['subnet'],
+                ));
             };
         } else {
             error(format("'subnet' key missing for subnet %s", i));
