@@ -83,7 +83,9 @@ function npush = {
     n = dict();
     index = 0;
     while (index < ARGC) {
-        if (!is_string(ARGV[index])) error(format("key is not a string: %s", ARGV[index]));
+        if (!is_string(ARGV[index])) {
+            error(format("key is not a string: %s", ARGV[index]));
+        };
         n[ARGV[index]] = ARGV[index+1];
         index = index + 2;
     };
@@ -158,7 +160,9 @@ function push_if = {
 ############################################################
 function hostname_from_object = {
     # Check cardinality.
-    if (ARGC != 0) error("usage: hostname_from_object()");
+    if (ARGC != 0) {
+        error("usage: hostname_from_object()");
+    };
 
     m = matches(OBJECT, "([^\\.]+)(\\.(.*))?");
     if (length(m) >= 2) {
